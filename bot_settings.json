@@ -1,0 +1,7 @@
+{
+  "trading_enabled": true,
+  "no_auth_trading": true,
+  "wait_for_entry": false,
+  "entry_wait_seconds": 5,
+  "emergency_stop": false
+}

@@ -1,0 +1,11 @@
+# Signal Sniper MT5 Portal — Cloudflare Tunnel example
+# Replace the hostname and tunnel UUID before use.
+# Keep this file free of secrets; Cloudflare credentials are managed separately.
+
+tunnel: YOUR-TUNNEL-UUID
+credentials-file: /Users/YOUR_USER/.cloudflared/YOUR-TUNNEL-UUID.json
+
+ingress:
+  - hostname: mt5.example.com
+    service: http://127.0.0.1:8080
+  - service: http_status:404

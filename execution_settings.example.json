@@ -1,0 +1,11 @@
+{
+  "adapter": "auto",
+  "execution_enabled": false,
+  "symbol": "XAUUSD",
+  "magic_number": 5142026,
+  "deviation_points": 50,
+  "poll_seconds": 0.5,
+  "terminal_path": "",
+  "login": null,
+  "server": ""
+}

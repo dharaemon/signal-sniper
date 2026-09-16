@@ -1,0 +1,76 @@
+# ==========================================
+# SIGNAL SNIPER - NEVER COMMIT
+# ==========================================
+
+# Secrets / environment
+.env
+.env.*
+t.env
+!.env.example
+
+# Python environments/cache
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Runtime
+runtime/
+*.log
+*.pid
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Telegram sessions
+*.session
+*.session-journal
+
+# User / owner configuration
+control_owner.json
+
+# MT5 private/runtime configuration
+execution_settings.json
+mt5_connection.json
+mt5_credentials.json
+mt5_login.json
+mt5_login_requests.json
+
+# Runtime trading state
+dashboard_state.json
+trade_approvals.json
+trade_notifications.json
+approval_requests.json
+execution_notifications.json
+
+# Backups
+*.backup
+*.backup-*
+*.backup-before-*
+*backup*
+
+# Archives
+*.zip
+*.tar
+*.tar.gz
+
+# Cloudflare private credentials
+.cloudflared/
+*.pem
+cloudflared-config.yml
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# Additional runtime state
+dashboard_message.json
+dashboard_state.json
+
+# Additional runtime state
+dashboard_message.json
+dashboard_state.json

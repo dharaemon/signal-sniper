@@ -1,0 +1,15 @@
+Signal Sniper consistency fix
+
+Fixes included:
+- TP strings such as "1:3 QUICKKK" are sanitized to the executable target "1:3".
+- Shared RR parser accepts provider chatter after a valid RR token.
+- Management fills no longer masquerade as new trade executions.
+- Successful SL/TP/breakeven updates are silent in Telegram; only real entry fills, close-all results, and failures are surfaced.
+- Submitted/intermediate notification events are suppressed to prevent message spam.
+- MT5 health snapshots include open position tickets on Mac and Windows.
+- Listener reconciles stale in-memory trades against MT5 and clears them after the broker position disappears.
+- CLOSE_ALL completion clears the local active trade immediately.
+- Dashboard TP prefers calculated/final numeric MT5 TP instead of the raw provider string.
+- Existing fixes retained: short SS MT5 comments, filling-mode negotiation, account-wide close all, NO_CHANGES success, default RR 1:1, default lot 0.01.
+
+Apply by replacing the matching files in ~/Desktop/signal-sniper-main, then restart the bot.

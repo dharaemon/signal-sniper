@@ -1,0 +1,6 @@
+{
+  "lot_size": 0.01,
+  "local_take_profit_pips": null,
+  "local_stop_loss_pips": null,
+  "default_rr": "1:1"
+}

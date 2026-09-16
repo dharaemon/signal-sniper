@@ -1,0 +1,26 @@
+Signal Sniper targeted fix bundle
+
+Findings from the supplied runtime state:
+- Latest OPEN_MARKET trade was FILLED at 4317.18 with SL 4355 and computed 1:2 TP = 4241.54.
+- The following MODIFY_STOP_LOSS returned MT5 retcode 10025 "No changes" because the SL was already present on the position. The bot incorrectly reported that idempotent result as an execution failure.
+
+Fixes in this patch:
+1. Mac MT5 worker treats TRADE_RETCODE_NO_CHANGES (10025) as a successful/idempotent protection update.
+2. Mac MT5 worker checks whether requested SL/TP is already set before sending a redundant modification.
+3. Windows/shared MT5 adapter gets the same idempotent SL/TP handling for future VPS deployment.
+4. Final TP adjustment accepts NO_CHANGES as success on both Mac and Windows paths.
+5. Telegram trade notifications prefer the calculated broker TP price (or final_take_profit) over raw provider tokens like "1:2".
+6. Existing RR TP formula remains platform-independent in execution_tp.py.
+7. Existing SQLite connection context-manager fix is preserved in execution_store.py.
+
+Observed correct RR example from supplied database:
+SELL fill 4317.18, SL 4355.00, 1:2 => TP 4241.54.
+
+Tests run after patch:
+- python3 -m py_compile mac_mt5_worker.py mt5_adapter_common.py telegram_listener.py execution_tp.py execution_store.py
+- python3 test_execution_tp.py
+- python3 test_execution_foundation.py
+- python3 test_entry_engine.py
+All passed.
+
+No live trade was placed during this patch.
