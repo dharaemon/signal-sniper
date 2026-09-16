@@ -1,6 +1,7 @@
 import json
 import os
 import tempfile
+import time
 from datetime import datetime, timezone
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -37,11 +38,47 @@ def _read():
 
 
 def _write(data):
-    fd, tmp = tempfile.mkstemp(prefix=".mt5_connection_", suffix=".tmp", dir=BASE_DIR, text=True)
+    payload = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+    fd, tmp = tempfile.mkstemp(
+        prefix=".mt5_connection_",
+        suffix=".tmp",
+        dir=BASE_DIR,
+        text=True,
+    )
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-        os.replace(tmp, STATE_FILE)
+            f.write(payload)
+            f.flush()
+            os.fsync(f.fileno())
+
+        # On Windows another process can briefly have the destination open,
+        # which makes os.replace() raise WinError 5. Retry the atomic replace
+        # for a short period before falling back to an in-place write.
+        last_error = None
+        for _ in range(20):
+            try:
+                os.replace(tmp, STATE_FILE)
+                return
+            except PermissionError as exc:
+                last_error = exc
+                time.sleep(0.05)
+
+        # Fallback keeps the executor alive if Windows file locking prevents
+        # an atomic rename for longer than expected.
+        try:
+            with open(STATE_FILE, "w", encoding="utf-8") as f:
+                f.write(payload)
+                f.flush()
+                os.fsync(f.fileno())
+            try:
+                os.unlink(tmp)
+            except FileNotFoundError:
+                pass
+            return
+        except Exception:
+            if last_error is not None:
+                raise last_error
+            raise
     except Exception:
         try:
             os.unlink(tmp)
