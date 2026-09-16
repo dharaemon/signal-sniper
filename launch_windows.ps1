@@ -9,6 +9,12 @@ if (-not (Test-Path $Python)) { $Python = Join-Path $ProjectDir 'venv\Scripts\py
 if (-not (Test-Path $Python)) { throw 'Python virtual environment missing. Run .\setup_windows.ps1 first.' }
 if (-not (Test-Path '.env')) { throw 'Missing .env. Configure local Telegram credentials before launch.' }
 
+# Force UTF-8 for all Python services so emoji/status output does not crash
+# under the default Windows cp1252 console/log encoding.
+$env:PYTHONUTF8 = '1'
+$env:PYTHONIOENCODING = 'utf-8'
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+
 New-Item -ItemType Directory -Force -Path runtime | Out-Null
 & $Python -B -m py_compile native_mt5_executor.py telegram_listener.py telegram_control_bot.py
 
