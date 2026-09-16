@@ -25,7 +25,10 @@ if (-not (Test-Path 'execution_settings.json')) {
     Copy-Item 'execution_settings.example.json' 'execution_settings.json'
 }
 
-& $VenvPython -B -m py_compile *.py
+$PythonFiles = Get-ChildItem -Path $ProjectDir -Filter '*.py' -File | ForEach-Object { $_.FullName }
+if ($PythonFiles.Count -gt 0) {
+    & $VenvPython -B -m py_compile $PythonFiles
+}
 & $VenvPython -B -c "import MetaTrader5; print('Official MetaTrader5 Python package: OK')"
 
 $settings = Get-Content 'execution_settings.json' -Raw | ConvertFrom-Json
